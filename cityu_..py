@@ -24,11 +24,21 @@ model = tf.keras.models.load_model('your_model.keras')
 
 
 def capture_image():
-   cap = cv2.VideoCapture(0)
-   ret, frame = cap.read()
-   cap.release()
-   cv2.imwrite('captured_image.jpg', frame) 
-   return 'captured_image.jpg'
+    cap = cv2.VideoCapture(0)
+    
+    if not cap.isOpened():
+        print("Error: Camera not accessible.")
+        return None
+    
+    ret, frame = cap.read()
+    
+    if not ret:
+        print("Error: Unable to capture image.")
+        return None
+    
+    cap.release()
+    cv2.imwrite('captured_image.jpg', frame)
+    return 'captured_image.jpg'
 
 
 def detect_object(image_path):
@@ -59,7 +69,6 @@ def main():
    image_path = capture_image()
    dimensions = detect_object(image_path)
    volume = calculate_volume(dimensions)
-   print(f"Dimensions: {dimensions}")
    print(f"Maximum Volume: {volume}")
 
 
